@@ -7,7 +7,7 @@ import { EditInfoFormValues } from "../../services/types/EditInfoFormValues";
 
 interface BasicInformationProps {
   formik: FormikProps<EditInfoFormValues>;
-  userEditInfo: Partial<EditInfoFormValues> | null;
+  userEditInfo: EditInfoFormValues | undefined;
   isOfficer: boolean;
 }
 
