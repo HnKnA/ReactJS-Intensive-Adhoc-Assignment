@@ -7,15 +7,15 @@ interface User {
   role: "user" | "officer";
 }
 
-const mockUsers: User[] = [
+export const mockUsers: User[] = [
   {
-    name: "user",
+    name: "tuan",
     email: "anhtuan@gmail.com",
     password: "User@123456!",
     role: "user",
   },
   {
-    name: "officer",
+    name: "manager",
     email: "admin@gmail.com",
     password: "Officer@123456!",
     role: "officer",

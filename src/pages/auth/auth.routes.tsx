@@ -4,10 +4,10 @@ import SignUp from "./sign-up/sign-up";
 import React, { Suspense } from "react";
 import Spinner from "../../components/spinner/spinner";
 import { lazyLoadWithDelay } from "../../utils/lazyLoadWithDelay";
+import Login from "./login/Login";
 
 // Lazy load your components with a 1.5 second delay
 const Auth = lazyLoadWithDelay(() => import("./auth"), 1500);
-const Login = lazyLoadWithDelay(() => import("./login/Login"), 1500);
 
 const authRoutes: RouteObject[] = [
   {

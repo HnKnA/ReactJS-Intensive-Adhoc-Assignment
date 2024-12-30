@@ -8,8 +8,8 @@ interface MenuItem {
 const Sidebar = () => {
   const menuItems: MenuItem[] = [
     {
-      name: "Example",
-      link: "#",
+      name: "Home",
+      link: "/",
       icon: "/icons/settings.svg",
     },
   ];
@@ -26,7 +26,7 @@ const Sidebar = () => {
               {menuItems.map((item: any) => (
                 <li>
                   <Link
-                    to={item.url}
+                    to={item.link}
                     className="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700"
                   >
                     <img className="h-8 mr-3" src={item.icon} />

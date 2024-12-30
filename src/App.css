@@ -1,0 +1,33 @@
+/* CSS for datepicker */
+.react-datepicker-wrapper {
+    width: 100%;
+}
+
+.react-datepicker__input-container {
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
+}
+
+.react-datepicker__input-container input {
+    flex-grow: 1;
+}
+
+.react-datepicker__view-calendar-icon input {
+    padding: 0.5rem 1rem;
+}
+
+.react-datepicker__input-container .react-datepicker__calendar-icon {
+    top: 50%;
+    transform: translate(-30%, -40%);
+}
+
+.react-datepicker__year-select,
+.react-datepicker__month-select {
+    border-radius: 10px;
+    padding: 0.3rem 1.5rem;
+}
+
+.react-datepicker__current-month {
+    padding: 0.5rem;
+}

@@ -6,7 +6,7 @@ interface ProtectedRouteProps {
   children: ReactNode;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user } = useContext(AuthenticatedContext);
 
   // If no user is logged in, navigate to "/auth/login"

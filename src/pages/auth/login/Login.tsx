@@ -1,8 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import { useContext, useEffect } from "react";
 import { AuthenticatedContext } from "../../../shared/Authenticated";
+import { loginValidationSchema } from "../../../assets/validation/loginValidationSchema";
+import { LoginFormValues } from "../../../services/types/LoginFormValues";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,38 +15,17 @@ const Login = () => {
       if (user.role === "officer") {
         navigate("/pages"); // Officer => Client list
       } else {
-        navigate("/pages/home"); // Normal user => Profile page
+        navigate(`/pages/user/${user.name}/pi`); // Normal user => Profile page
       }
     }
   }, [user, navigate]);
 
-  const formik = useFormik({
+  const formik = useFormik<LoginFormValues>({
     initialValues: {
       email: "",
       password: "",
     },
-    validationSchema: Yup.object({
-      email: Yup.string()
-        .email("Invalid email address")
-        .required("Email is required")
-        .min(8, "Email must be at least 8 characters")
-        .max(30, "Email must not exceed 30 characters"),
-
-      password: Yup.string()
-        .required("Password is required")
-        .min(12, "Password must be at least 12 characters")
-        .max(16, "Password must not exceed 16 characters")
-        .matches(
-          /^[a-zA-Z0-9@#&!]+$/,
-          "Password must contain only letters, numbers, and special characters (@, #, &, !)"
-        )
-        .matches(/[a-zA-Z]/, "Password must contain at least one letter")
-        .matches(/[0-9]/, "Password must contain at least one number")
-        .matches(
-          /[@#&!]/,
-          "Password must contain at least one special character (@, #, &, !)"
-        ),
-    }),
+    validationSchema: loginValidationSchema,
     onSubmit: (values) => {
       const loggedInUser = login(values.email, values.password);
 
@@ -54,7 +34,7 @@ const Login = () => {
         if (loggedInUser.role === "officer") {
           navigate("/pages"); // Officer => Client list
         } else {
-          navigate("/pages/home"); // Normal user => Profile page
+          navigate(`/pages/user/${loggedInUser.name}/pi`); // Normal user => Profile page
         }
       } else {
         alert("Login failed. Please check your credentials.");
