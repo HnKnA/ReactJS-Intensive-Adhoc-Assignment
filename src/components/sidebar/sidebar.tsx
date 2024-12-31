@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import React, { ReactElement } from "react";
+import useOfficerMode from "../../hooks/useOfficerMode";
 interface MenuItem {
   name: string;
   link: string;
   icon: string;
 }
 const Sidebar = () => {
+  const { isOfficer } = useOfficerMode();
   const menuItems: MenuItem[] = [
     {
       name: "Home",
@@ -13,6 +15,14 @@ const Sidebar = () => {
       icon: "/icons/settings.svg",
     },
   ];
+
+  if (isOfficer) {
+    menuItems.push({
+      name: "Review",
+      link: "/pages/review",
+      icon: "/icons/settings.svg",
+    });
+  }
   return (
     <aside
       id="sidebar"

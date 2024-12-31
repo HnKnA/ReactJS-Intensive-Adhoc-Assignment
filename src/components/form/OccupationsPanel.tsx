@@ -1,5 +1,5 @@
 import React from "react";
-import { FormikProps, FormikErrors } from "formik";
+import { FormikProps, FormikErrors, FormikTouched } from "formik";
 import FormErrorMessage from "./FormErrorMessage";
 import DateChoosing from "../datetime/DateChoosing";
 import styles from "../../assets/css/Form.module.css";
@@ -7,12 +7,20 @@ import {
   EditInfoFormValues,
   Occupation,
 } from "../../services/types/EditInfoFormValues";
+import { KycFormValues } from "../../services/types/KycFormValues";
 
 interface OccupationsPanelProps {
-  formik: FormikProps<EditInfoFormValues>;
-  userEditInfo: EditInfoFormValues | undefined;
+  formik: FormikProps<EditInfoFormValues> | FormikProps<KycFormValues>;
+  userEditInfo: EditInfoFormValues | KycFormValues | undefined;
   isOfficer: boolean;
 }
+
+// Type guard to determine if formik.values is of KycFormValues
+const isKycFormValues = (
+  values: EditInfoFormValues | KycFormValues
+): values is KycFormValues => {
+  return (values as KycFormValues).personalInfo !== undefined;
+};
 
 function OccupationsPanel({
   formik,
@@ -20,6 +28,30 @@ function OccupationsPanel({
   isOfficer,
 }: OccupationsPanelProps) {
   const { getFieldProps } = formik;
+
+  // Dynamically determine the path for occupation data
+  const occupationValues = isKycFormValues(formik.values)
+    ? formik.values.personalInfo.occupation
+    : formik.values.occupation;
+
+  const userOccupationValues = userEditInfo
+    ? isKycFormValues(userEditInfo)
+      ? userEditInfo.personalInfo.occupation
+      : userEditInfo.occupation
+    : [];
+
+  const touchedOccupation = formik.touched
+    ? isKycFormValues(formik.values)
+      ? (formik.touched as FormikTouched<KycFormValues>).personalInfo
+          ?.occupation
+      : (formik.touched as FormikTouched<EditInfoFormValues>).occupation
+    : [];
+
+  const errorsOccupation = formik.errors
+    ? isKycFormValues(formik.values)
+      ? (formik.errors as FormikErrors<KycFormValues>).personalInfo?.occupation
+      : (formik.errors as FormikErrors<EditInfoFormValues>).occupation
+    : [];
 
   return (
     <div className={`${styles.panel} mb-6`}>
@@ -29,7 +61,7 @@ function OccupationsPanel({
       >
         Occupations
       </h3>
-      {formik.values.occupation.map((occ, index) => (
+      {occupationValues.map((occ, index) => (
         <div
           key={index}
           className="border rounded-md p-4 mb-6 bg-gray-50 shadow-md"
@@ -37,6 +69,7 @@ function OccupationsPanel({
           <h5 className="text-lg font-medium mb-4">Occupation {index + 1}</h5>
 
           <div className="grid grid-cols-3 gap-4 mb-4">
+            {/* Occupation Field */}
             <div>
               <label
                 htmlFor={`occupation[${index}].occupation`}
@@ -47,12 +80,15 @@ function OccupationsPanel({
               <select
                 id={`occupation[${index}].occupation`}
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-color"
-                {...getFieldProps(`occupation[${index}].occupation`)}
+                {...getFieldProps(
+                  isKycFormValues(formik.values)
+                    ? `personalInfo.occupation[${index}].occupation`
+                    : `occupation[${index}].occupation`
+                )}
                 value={
                   isOfficer
-                    ? userEditInfo?.occupation?.[index]?.occupation ||
-                      "unemployed"
-                    : formik.values.occupation[index]?.occupation
+                    ? userOccupationValues?.[index]?.occupation || "unemployed"
+                    : occupationValues[index]?.occupation
                 }
                 disabled={isOfficer}
               >
@@ -65,17 +101,17 @@ function OccupationsPanel({
               {!isOfficer && (
                 <FormErrorMessage
                   error={
-                    (
-                      formik.errors.occupation?.[
-                        index
-                      ] as FormikErrors<Occupation>
-                    )?.occupation
+                    typeof errorsOccupation?.[index] === "object"
+                      ? (errorsOccupation?.[index] as FormikErrors<Occupation>)
+                          ?.occupation
+                      : (errorsOccupation?.[index] as string | undefined)
                   }
-                  touched={formik.touched.occupation?.[index]?.occupation}
+                  touched={touchedOccupation?.[index]?.occupation}
                 />
               )}
             </div>
 
+            {/* Occupation From */}
             <div>
               <label
                 htmlFor={`occupation[${index}].occupationFrom`}
@@ -84,44 +120,24 @@ function OccupationsPanel({
                 From Date
               </label>
               <DateChoosing
-                name={`occupation[${index}].occupationFrom`}
+                name={
+                  isKycFormValues(formik.values)
+                    ? `personalInfo.occupation[${index}].occupationFrom`
+                    : `occupation[${index}].occupationFrom`
+                }
                 placeholderText={
-                  isOfficer && userEditInfo?.occupation?.[index]?.occupationFrom
+                  isOfficer && userOccupationValues?.[index]?.occupationFrom
                     ? `${new Date(
-                        userEditInfo.occupation?.[index]
+                        userOccupationValues[index]
                           ?.occupationFrom as unknown as string
                       ).toLocaleDateString("en-GB")}`
                     : "DD/MM/YYYY"
                 }
-                onFocus={() => {
-                  if (
-                    isOfficer &&
-                    !formik.values.occupation?.[index]?.occupationFrom
-                  ) {
-                    const ocfAsDate =
-                      userEditInfo?.occupation?.[index]?.occupationFrom &&
-                      !isNaN(
-                        new Date(
-                          userEditInfo.occupation?.[index]
-                            ?.occupationFrom as unknown as string
-                        ).getTime()
-                      )
-                        ? new Date(
-                            userEditInfo.occupation?.[index]
-                              ?.occupationFrom as unknown as string
-                          )
-                        : null;
-
-                    formik.setFieldValue(
-                      `occupation[${index}].occupationFrom`,
-                      ocfAsDate
-                    );
-                  }
-                }}
                 readOnly={isOfficer}
               />
             </div>
 
+            {/* Occupation To */}
             <div>
               <label
                 htmlFor={`occupation[${index}].occupationTo`}
@@ -130,52 +146,30 @@ function OccupationsPanel({
                 To Date
               </label>
               <DateChoosing
-                name={`occupation[${index}].occupationTo`}
+                name={
+                  isKycFormValues(formik.values)
+                    ? `personalInfo.occupation[${index}].occupationTo`
+                    : `occupation[${index}].occupationTo`
+                }
                 placeholderText={
-                  isOfficer && userEditInfo?.occupation?.[index]?.occupationTo
+                  isOfficer && userOccupationValues?.[index]?.occupationTo
                     ? `${new Date(
-                        userEditInfo.occupation?.[index]
+                        userOccupationValues[index]
                           ?.occupationTo as unknown as string
                       ).toLocaleDateString("en-GB")}`
                     : "DD/MM/YYYY"
                 }
-                onFocus={() => {
-                  if (
-                    isOfficer &&
-                    !formik.values.occupation?.[index]?.occupationTo
-                  ) {
-                    const octAsDate =
-                      userEditInfo?.occupation?.[index]?.occupationTo &&
-                      !isNaN(
-                        new Date(
-                          userEditInfo.occupation?.[index]
-                            ?.occupationTo as unknown as string
-                        ).getTime()
-                      )
-                        ? new Date(
-                            userEditInfo.occupation?.[index]
-                              ?.occupationTo as unknown as string
-                          )
-                        : null;
-
-                    formik.setFieldValue(
-                      `occupation[${index}].occupationTo`,
-                      octAsDate
-                    );
-                  }
-                }}
                 readOnly={isOfficer}
               />
               {!isOfficer && (
                 <FormErrorMessage
                   error={
-                    (
-                      formik.errors.occupation?.[
-                        index
-                      ] as FormikErrors<Occupation>
-                    )?.occupationTo
+                    typeof errorsOccupation?.[index] === "object"
+                      ? (errorsOccupation?.[index] as FormikErrors<Occupation>)
+                          ?.occupationTo
+                      : (errorsOccupation?.[index] as string | undefined)
                   }
-                  touched={formik.touched.occupation?.[index]?.occupationTo}
+                  touched={touchedOccupation?.[index]?.occupationTo}
                 />
               )}
             </div>
@@ -187,10 +181,15 @@ function OccupationsPanel({
               type="button"
               className="text-white bg-red-500 hover:bg-red-600 px-3 py-2 rounded-md text-sm"
               onClick={() => {
-                const updatedOccupations = formik.values.occupation.filter(
+                const updatedOccupations = occupationValues.filter(
                   (_, occIndex) => occIndex !== index
                 );
-                formik.setFieldValue("occupation", updatedOccupations);
+                formik.setFieldValue(
+                  isKycFormValues(formik.values)
+                    ? `personalInfo.occupation`
+                    : `occupation`,
+                  updatedOccupations
+                );
               }}
             >
               Delete Occupation
@@ -199,18 +198,22 @@ function OccupationsPanel({
         </div>
       ))}
 
+      {/* Add Occupation Button */}
       <button
         type="button"
         className={`${styles["btn-primary"]} px-4 py-2 mt-4 rounded-md`}
         onClick={() => {
-          formik.setFieldValue("occupation", [
-            ...formik.values.occupation,
-            {
-              occupation: "unemployed",
-              occupationFrom: null,
-              occupationTo: null,
-            },
-          ]);
+          const newOccupation = {
+            occupation: "unemployed",
+            occupationFrom: null,
+            occupationTo: null,
+          };
+          formik.setFieldValue(
+            isKycFormValues(formik.values)
+              ? `personalInfo.occupation`
+              : `occupation`,
+            [...occupationValues, newOccupation]
+          );
         }}
         hidden={isOfficer}
       >

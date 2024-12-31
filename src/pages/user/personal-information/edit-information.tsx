@@ -132,7 +132,7 @@ const EditInformation = () => {
         className="text-2xl font-bold text-center"
         style={{ color: "var(--primary-color)" }}
       >
-        Edit Information
+        Personal Information
       </h2>
 
       {/* Use Formik's handleSubmit for the form */}
@@ -192,6 +192,15 @@ const EditInformation = () => {
 
           {/* ================== SUBMIT BUTTON ================== */}
           <div className="text-right">
+            <button
+              className={`${styles["btn-primary"]} px-6 py-3 rounded-md mr-2 ${
+                isOfficer ? "hidden" : "cursor-pointer"
+              }`}
+              type="button"
+              onClick={() => navigate(`/pages/user/${user?.name}/pi`)}
+            >
+              Personal Information
+            </button>
             <button
               type="submit"
               className={`${styles["btn-primary"]} px-6 py-3 rounded-md`}

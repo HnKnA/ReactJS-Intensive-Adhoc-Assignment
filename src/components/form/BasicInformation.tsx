@@ -1,15 +1,23 @@
 import React from "react";
-import { FormikProps } from "formik";
+import { FormikProps, FormikErrors, FormikTouched } from "formik";
 import DateChoosing from "../datetime/DateChoosing";
 import FormErrorMessage from "./FormErrorMessage";
 import styles from "../../assets/css/Form.module.css";
 import { EditInfoFormValues } from "../../services/types/EditInfoFormValues";
+import { KycFormValues } from "../../services/types/KycFormValues";
 
 interface BasicInformationProps {
-  formik: FormikProps<EditInfoFormValues>;
-  userEditInfo: EditInfoFormValues | undefined;
+  formik: FormikProps<EditInfoFormValues> | FormikProps<KycFormValues>;
+  userEditInfo: EditInfoFormValues | KycFormValues | undefined;
   isOfficer: boolean;
 }
+
+// Type guard to check if formik.values is of KycFormValues
+const isKycFormValues = (
+  values: EditInfoFormValues | KycFormValues
+): values is KycFormValues => {
+  return (values as KycFormValues).personalInfo !== undefined;
+};
 
 function BasicInformation({
   formik,
@@ -17,6 +25,29 @@ function BasicInformation({
   isOfficer,
 }: BasicInformationProps) {
   const { getFieldProps } = formik;
+
+  // Dynamically determine the path for basic information data
+  const basicInfoValues = isKycFormValues(formik.values)
+    ? formik.values.personalInfo
+    : formik.values;
+
+  const userBasicInfo = userEditInfo
+    ? isKycFormValues(userEditInfo)
+      ? userEditInfo.personalInfo
+      : userEditInfo
+    : undefined;
+
+  const touchedBasicInfo = formik.touched
+    ? isKycFormValues(formik.values)
+      ? (formik.touched as FormikTouched<KycFormValues>).personalInfo
+      : (formik.touched as FormikTouched<EditInfoFormValues>)
+    : undefined;
+
+  const errorsBasicInfo = formik.errors
+    ? isKycFormValues(formik.values)
+      ? (formik.errors as FormikErrors<KycFormValues>).personalInfo
+      : (formik.errors as FormikErrors<EditInfoFormValues>)
+    : undefined;
 
   return (
     <div className={`border ${styles.panel} rounded-md p-4`}>
@@ -37,23 +68,29 @@ function BasicInformation({
             id="firstName"
             className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-color"
             placeholder={
-              isOfficer ? userEditInfo?.firstName : "Enter your first name"
+              isOfficer ? userBasicInfo?.firstName : "Enter your first name"
             }
-            {...getFieldProps("firstName")}
+            {...getFieldProps(
+              isKycFormValues(formik.values)
+                ? `personalInfo.firstName`
+                : `firstName`
+            )}
             readOnly={isOfficer}
             onFocus={() => {
-              if (isOfficer && !formik.values.firstName) {
+              if (isOfficer && !basicInfoValues.firstName) {
                 formik.setFieldValue(
-                  "firstName",
-                  userEditInfo?.firstName || ""
+                  isKycFormValues(formik.values)
+                    ? `personalInfo.firstName`
+                    : `firstName`,
+                  userBasicInfo?.firstName || ""
                 );
               }
             }}
           />
           {!isOfficer && (
             <FormErrorMessage
-              error={formik.errors.firstName}
-              touched={formik.touched.firstName}
+              error={errorsBasicInfo?.firstName}
+              touched={touchedBasicInfo?.firstName}
             />
           )}
         </div>
@@ -68,20 +105,29 @@ function BasicInformation({
             id="lastName"
             className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-color"
             placeholder={
-              isOfficer ? userEditInfo?.lastName : "Enter your last name"
+              isOfficer ? userBasicInfo?.lastName : "Enter your last name"
             }
-            {...getFieldProps("lastName")}
+            {...getFieldProps(
+              isKycFormValues(formik.values)
+                ? `personalInfo.lastName`
+                : `lastName`
+            )}
             readOnly={isOfficer}
             onFocus={() => {
-              if (isOfficer && !formik.values.lastName) {
-                formik.setFieldValue("lastName", userEditInfo?.lastName || "");
+              if (isOfficer && !basicInfoValues.lastName) {
+                formik.setFieldValue(
+                  isKycFormValues(formik.values)
+                    ? `personalInfo.lastName`
+                    : `lastName`,
+                  userBasicInfo?.lastName || ""
+                );
               }
             }}
           />
           {!isOfficer && (
             <FormErrorMessage
-              error={formik.errors.lastName}
-              touched={formik.touched.lastName}
+              error={errorsBasicInfo?.lastName}
+              touched={touchedBasicInfo?.lastName}
             />
           )}
         </div>
@@ -96,15 +142,21 @@ function BasicInformation({
             id="middleName"
             className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-color"
             placeholder={
-              isOfficer ? userEditInfo?.middleName : "Enter your middle name"
+              isOfficer ? userBasicInfo?.middleName : "Enter your middle name"
             }
             readOnly={isOfficer}
-            {...getFieldProps("middleName")}
+            {...getFieldProps(
+              isKycFormValues(formik.values)
+                ? `personalInfo.middleName`
+                : `middleName`
+            )}
             onFocus={() => {
-              if (isOfficer && !formik.values.middleName) {
+              if (isOfficer && !basicInfoValues.middleName) {
                 formik.setFieldValue(
-                  "middleName",
-                  userEditInfo?.middleName || ""
+                  isKycFormValues(formik.values)
+                    ? `personalInfo.middleName`
+                    : `middleName`,
+                  userBasicInfo?.middleName || ""
                 );
               }
             }}
@@ -117,22 +169,25 @@ function BasicInformation({
             Date of Birth
           </label>
           <DateChoosing
-            name="dob"
+            name={isKycFormValues(formik.values) ? `personalInfo.dob` : `dob`}
             withAgeCalculate
             placeholderText={
-              isOfficer && userEditInfo?.dob
-                ? `${new Date(userEditInfo.dob).toLocaleDateString("en-GB")}`
+              isOfficer && userBasicInfo?.dob
+                ? `${new Date(userBasicInfo.dob).toLocaleDateString("en-GB")}`
                 : "DD/MM/YYYY"
             }
             onFocus={() => {
-              if (isOfficer && !formik.values.dob) {
+              if (isOfficer && !basicInfoValues.dob) {
                 const dobAsDate =
-                  userEditInfo?.dob &&
-                  !isNaN(new Date(userEditInfo.dob).getTime())
-                    ? new Date(userEditInfo.dob)
+                  userBasicInfo?.dob &&
+                  !isNaN(new Date(userBasicInfo.dob).getTime())
+                    ? new Date(userBasicInfo.dob)
                     : null;
 
-                formik.setFieldValue("dob", dobAsDate);
+                formik.setFieldValue(
+                  isKycFormValues(formik.values) ? `personalInfo.dob` : `dob`,
+                  dobAsDate
+                );
               }
             }}
             readOnly={isOfficer}
@@ -150,11 +205,13 @@ function BasicInformation({
             className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-color"
             placeholder={
               isOfficer
-                ? userEditInfo?.age?.toString() || "Age not available"
-                : "This is your calculated age"
+                ? userBasicInfo?.age?.toString() || "Age not available"
+                : "0"
             }
-            {...getFieldProps("age")}
-            value={isOfficer ? undefined : formik.values.age || ""}
+            {...getFieldProps(
+              isKycFormValues(formik.values) ? `personalInfo.age` : `age`
+            )}
+            value={isOfficer ? undefined : basicInfoValues.age || ""}
             readOnly
           />
         </div>

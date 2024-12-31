@@ -1,17 +1,25 @@
 import React from "react";
-import { FormikProps, FormikErrors } from "formik";
+import { FormikProps, FormikErrors, FormikTouched } from "formik";
 import FormErrorMessage from "./FormErrorMessage";
 import styles from "../../assets/css/Form.module.css";
 import {
   EditInfoFormValues,
   Address,
 } from "../../services/types/EditInfoFormValues";
+import { KycFormValues } from "../../services/types/KycFormValues";
 
 interface AddressesPanelProps {
-  formik: FormikProps<EditInfoFormValues>;
-  userEditInfo: EditInfoFormValues | undefined;
+  formik: FormikProps<EditInfoFormValues> | FormikProps<KycFormValues>;
+  userEditInfo: EditInfoFormValues | KycFormValues | undefined;
   isOfficer: boolean;
 }
+
+// Type guard to check if formik.values is of KycFormValues
+const isKycFormValues = (
+  values: EditInfoFormValues | KycFormValues
+): values is KycFormValues => {
+  return (values as KycFormValues).personalInfo !== undefined;
+};
 
 function AddressesPanel({
   formik,
@@ -20,10 +28,33 @@ function AddressesPanel({
 }: AddressesPanelProps) {
   const { getFieldProps } = formik;
 
+  // Dynamically determine the path for address data
+  const addressValues = isKycFormValues(formik.values)
+    ? formik.values.personalInfo.address
+    : formik.values.address;
+
+  const userAddressValues = userEditInfo
+    ? isKycFormValues(userEditInfo)
+      ? userEditInfo.personalInfo.address
+      : userEditInfo.address
+    : [];
+
+  const touchedAddresses = formik.touched
+    ? isKycFormValues(formik.values)
+      ? (formik.touched as FormikTouched<KycFormValues>).personalInfo?.address
+      : (formik.touched as FormikTouched<EditInfoFormValues>).address
+    : [];
+
+  const errorsAddresses = formik.errors
+    ? isKycFormValues(formik.values)
+      ? (formik.errors as FormikErrors<KycFormValues>).personalInfo?.address
+      : (formik.errors as FormikErrors<EditInfoFormValues>).address
+    : [];
+
   return (
     <div className={`${styles.panel} mb-6`}>
       <h4 className="text-md font-semibold mb-4">Addresses</h4>
-      {formik.values.address.map((addr, index) => (
+      {addressValues.map((addr, index) => (
         <div
           key={index}
           className="border rounded-md p-4 mb-6 bg-gray-50 shadow-md"
@@ -44,27 +75,22 @@ function AddressesPanel({
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-color"
                 placeholder={
                   isOfficer
-                    ? userEditInfo?.address?.[index]?.country || "N/A"
+                    ? userAddressValues?.[index]?.country || "N/A"
                     : "Enter country"
                 }
                 readOnly={isOfficer}
-                onFocus={() => {
-                  if (isOfficer && !formik.values.address[index]?.country) {
-                    formik.setFieldValue(
-                      `address[${index}].country`,
-                      userEditInfo?.address?.[index]?.country || ""
-                    );
-                  }
-                }}
-                {...getFieldProps(`address[${index}].country`)}
+                {...getFieldProps(
+                  isKycFormValues(formik.values)
+                    ? `personalInfo.address[${index}].country`
+                    : `address[${index}].country`
+                )}
               />
               {!isOfficer && (
                 <FormErrorMessage
                   error={
-                    (formik.errors.address?.[index] as FormikErrors<Address>)
-                      ?.country
+                    (errorsAddresses?.[index] as FormikErrors<Address>)?.country
                   }
-                  touched={formik.touched.address?.[index]?.country}
+                  touched={touchedAddresses?.[index]?.country}
                 />
               )}
             </div>
@@ -83,27 +109,22 @@ function AddressesPanel({
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-color"
                 placeholder={
                   isOfficer
-                    ? userEditInfo?.address?.[index]?.city || "N/A"
+                    ? userAddressValues?.[index]?.city || "N/A"
                     : "Enter city"
                 }
                 readOnly={isOfficer}
-                onFocus={() => {
-                  if (isOfficer && !formik.values.address[index]?.city) {
-                    formik.setFieldValue(
-                      `address[${index}].city`,
-                      userEditInfo?.address?.[index]?.city || ""
-                    );
-                  }
-                }}
-                {...getFieldProps(`address[${index}].city`)}
+                {...getFieldProps(
+                  isKycFormValues(formik.values)
+                    ? `personalInfo.address[${index}].city`
+                    : `address[${index}].city`
+                )}
               />
               {!isOfficer && (
                 <FormErrorMessage
                   error={
-                    (formik.errors.address?.[index] as FormikErrors<Address>)
-                      ?.city
+                    (errorsAddresses?.[index] as FormikErrors<Address>)?.city
                   }
-                  touched={formik.touched.address?.[index]?.city}
+                  touched={touchedAddresses?.[index]?.city}
                 />
               )}
             </div>
@@ -122,27 +143,22 @@ function AddressesPanel({
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-color"
                 placeholder={
                   isOfficer
-                    ? userEditInfo?.address?.[index]?.street || "N/A"
+                    ? userAddressValues?.[index]?.street || "N/A"
                     : "Enter street"
                 }
                 readOnly={isOfficer}
-                onFocus={() => {
-                  if (isOfficer && !formik.values.address[index]?.street) {
-                    formik.setFieldValue(
-                      `address[${index}].street`,
-                      userEditInfo?.address?.[index]?.street || ""
-                    );
-                  }
-                }}
-                {...getFieldProps(`address[${index}].street`)}
+                {...getFieldProps(
+                  isKycFormValues(formik.values)
+                    ? `personalInfo.address[${index}].street`
+                    : `address[${index}].street`
+                )}
               />
               {!isOfficer && (
                 <FormErrorMessage
                   error={
-                    (formik.errors.address?.[index] as FormikErrors<Address>)
-                      ?.street
+                    (errorsAddresses?.[index] as FormikErrors<Address>)?.street
                   }
-                  touched={formik.touched.address?.[index]?.street}
+                  touched={touchedAddresses?.[index]?.street}
                 />
               )}
             </div>
@@ -161,19 +177,15 @@ function AddressesPanel({
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-color"
                 placeholder={
                   isOfficer
-                    ? userEditInfo?.address?.[index]?.postalCode || "N/A"
+                    ? userAddressValues?.[index]?.postalCode || "N/A"
                     : "Enter postal code"
                 }
                 readOnly={isOfficer}
-                onFocus={() => {
-                  if (isOfficer && !formik.values.address[index]?.postalCode) {
-                    formik.setFieldValue(
-                      `address[${index}].postalCode`,
-                      userEditInfo?.address?.[index]?.postalCode || ""
-                    );
-                  }
-                }}
-                {...getFieldProps(`address[${index}].postalCode`)}
+                {...getFieldProps(
+                  isKycFormValues(formik.values)
+                    ? `personalInfo.address[${index}].postalCode`
+                    : `address[${index}].postalCode`
+                )}
               />
             </div>
 
@@ -188,11 +200,15 @@ function AddressesPanel({
               <select
                 id={`address[${index}].addressType`}
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-color"
-                {...getFieldProps(`address[${index}].addressType`)}
+                {...getFieldProps(
+                  isKycFormValues(formik.values)
+                    ? `personalInfo.address[${index}].addressType`
+                    : `address[${index}].addressType`
+                )}
                 value={
                   isOfficer
-                    ? userEditInfo?.address?.[index]?.addressType || "mailing"
-                    : formik.values.address[index]?.addressType
+                    ? userAddressValues?.[index]?.addressType || "mailing"
+                    : addressValues[index]?.addressType
                 }
                 disabled={isOfficer}
               >
@@ -202,10 +218,10 @@ function AddressesPanel({
               {!isOfficer && (
                 <FormErrorMessage
                   error={
-                    (formik.errors.address?.[index] as FormikErrors<Address>)
+                    (errorsAddresses?.[index] as FormikErrors<Address>)
                       ?.addressType
                   }
-                  touched={formik.touched.address?.[index]?.addressType}
+                  touched={touchedAddresses?.[index]?.addressType}
                 />
               )}
             </div>
@@ -217,10 +233,15 @@ function AddressesPanel({
               type="button"
               className="text-white bg-red-500 hover:bg-red-600 px-3 py-2 rounded-md text-sm"
               onClick={() => {
-                const updatedAddresses = formik.values.address.filter(
+                const updatedAddresses = addressValues.filter(
                   (_, addrIndex) => addrIndex !== index
                 );
-                formik.setFieldValue("address", updatedAddresses);
+                formik.setFieldValue(
+                  isKycFormValues(formik.values)
+                    ? `personalInfo.address`
+                    : `address`,
+                  updatedAddresses
+                );
               }}
             >
               Delete Address
@@ -229,20 +250,22 @@ function AddressesPanel({
         </div>
       ))}
 
+      {/* Add Address Button */}
       <button
         type="button"
         className={`${styles["btn-primary"]} px-4 py-2 mt-4 rounded-md`}
         onClick={() => {
-          formik.setFieldValue("address", [
-            ...formik.values.address,
-            {
-              country: "",
-              city: "",
-              street: "",
-              postalCode: "",
-              addressType: "mailing",
-            },
-          ]);
+          const newAddress = {
+            country: "",
+            city: "",
+            street: "",
+            postalCode: "",
+            addressType: "mailing",
+          };
+          formik.setFieldValue(
+            isKycFormValues(formik.values) ? `personalInfo.address` : `address`,
+            [...addressValues, newAddress]
+          );
         }}
         hidden={isOfficer}
       >

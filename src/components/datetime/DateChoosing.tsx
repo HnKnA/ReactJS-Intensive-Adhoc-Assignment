@@ -71,7 +71,11 @@ const DateChoosing = ({
           setFieldValue(name, date);
           setFieldTouched(name, true);
           if (withAgeCalculate && date !== null) {
-            setFieldValue("age", calculateAge(date));
+            if ("personalInfo" in values) {
+              setFieldValue("personalInfo.age", calculateAge(date));
+            } else {
+              setFieldValue("age", calculateAge(date));
+            }
           }
         }}
         onBlur={() => {

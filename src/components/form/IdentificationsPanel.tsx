@@ -1,5 +1,5 @@
 import React from "react";
-import { FormikProps, FormikErrors } from "formik";
+import { FormikProps, FormikErrors, FormikTouched } from "formik";
 import FormErrorMessage from "./FormErrorMessage";
 import DateChoosing from "../datetime/DateChoosing";
 import styles from "../../assets/css/Form.module.css";
@@ -7,12 +7,20 @@ import {
   EditInfoFormValues,
   Identification,
 } from "../../services/types/EditInfoFormValues";
+import { KycFormValues } from "../../services/types/KycFormValues";
 
 interface IdentificationsPanelProps {
-  formik: FormikProps<EditInfoFormValues>;
-  userEditInfo: EditInfoFormValues | undefined;
+  formik: FormikProps<EditInfoFormValues> | FormikProps<KycFormValues>;
+  userEditInfo: EditInfoFormValues | KycFormValues | undefined;
   isOfficer: boolean;
 }
+
+// Type guard to check if formik.values is of KycFormValues
+const isKycFormValues = (
+  values: EditInfoFormValues | KycFormValues
+): values is KycFormValues => {
+  return (values as KycFormValues).personalInfo !== undefined;
+};
 
 function IdentificationsPanel({
   formik,
@@ -20,6 +28,30 @@ function IdentificationsPanel({
   isOfficer,
 }: IdentificationsPanelProps) {
   const { getFieldProps } = formik;
+
+  const identificationValues = isKycFormValues(formik.values)
+    ? formik.values.personalInfo.identification
+    : formik.values.identification;
+
+  const userIdentificationValues = userEditInfo
+    ? isKycFormValues(userEditInfo)
+      ? userEditInfo.personalInfo.identification
+      : userEditInfo.identification
+    : [];
+
+  const touchedIdentification = formik.touched
+    ? isKycFormValues(formik.values)
+      ? (formik.touched as FormikTouched<KycFormValues>).personalInfo
+          ?.identification
+      : (formik.touched as FormikTouched<EditInfoFormValues>).identification
+    : [];
+
+  const errorsIdentification = formik.errors
+    ? isKycFormValues(formik.values)
+      ? (formik.errors as FormikErrors<KycFormValues>).personalInfo
+          ?.identification
+      : (formik.errors as FormikErrors<EditInfoFormValues>).identification
+    : [];
 
   return (
     <div className={`${styles.panel} mb-6`}>
@@ -29,7 +61,7 @@ function IdentificationsPanel({
       >
         Identification Documents
       </h3>
-      {formik.values.identification.map((idf, index) => (
+      {identificationValues.map((idf, index) => (
         <div
           key={index}
           className="border rounded-md p-4 mb-6 bg-gray-50 shadow-md"
@@ -49,12 +81,15 @@ function IdentificationsPanel({
               <select
                 id={`identification[${index}].idType`}
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-color"
-                {...getFieldProps(`identification[${index}].idType`)}
+                {...getFieldProps(
+                  isKycFormValues(formik.values)
+                    ? `personalInfo.identification[${index}].idType`
+                    : `identification[${index}].idType`
+                )}
                 value={
                   isOfficer
-                    ? userEditInfo?.identification?.[index]?.idType ||
-                      "national-id"
-                    : formik.values.identification[index]?.idType
+                    ? userIdentificationValues?.[index]?.idType || "national-id"
+                    : identificationValues[index]?.idType
                 }
                 disabled={isOfficer}
               >
@@ -66,12 +101,12 @@ function IdentificationsPanel({
                 <FormErrorMessage
                   error={
                     (
-                      formik.errors.identification?.[
+                      errorsIdentification?.[
                         index
                       ] as FormikErrors<Identification>
                     )?.idType
                   }
-                  touched={formik.touched.identification?.[index]?.idType}
+                  touched={touchedIdentification?.[index]?.idType}
                 />
               )}
             </div>
@@ -85,7 +120,11 @@ function IdentificationsPanel({
                 Expiry Date
               </label>
               <DateChoosing
-                name={`identification[${index}].idExpired`}
+                name={
+                  isKycFormValues(formik.values)
+                    ? `personalInfo.identification[${index}].idExpired`
+                    : `identification[${index}].idExpired`
+                }
                 minDate={new Date()}
                 maxDate={
                   new Date(
@@ -93,38 +132,13 @@ function IdentificationsPanel({
                   )
                 }
                 placeholderText={
-                  isOfficer && userEditInfo?.identification?.[index]?.idExpired
+                  isOfficer && userIdentificationValues?.[index]?.idExpired
                     ? `${new Date(
-                        userEditInfo.identification?.[index]
+                        userIdentificationValues[index]
                           ?.idExpired as unknown as string
                       ).toLocaleDateString("en-GB")}`
                     : "DD/MM/YYYY"
                 }
-                onFocus={() => {
-                  if (
-                    isOfficer &&
-                    !formik.values.identification?.[index]?.idExpired
-                  ) {
-                    const expAsDate =
-                      userEditInfo?.identification?.[index]?.idExpired &&
-                      !isNaN(
-                        new Date(
-                          userEditInfo.identification?.[index]
-                            ?.idExpired as unknown as string
-                        ).getTime()
-                      )
-                        ? new Date(
-                            userEditInfo.identification?.[index]
-                              ?.idExpired as unknown as string
-                          )
-                        : null;
-
-                    formik.setFieldValue(
-                      `identification[${index}].idExpired`,
-                      expAsDate
-                    );
-                  }
-                }}
                 readOnly={isOfficer}
               />
             </div>
@@ -139,7 +153,7 @@ function IdentificationsPanel({
               </label>
               {isOfficer ? (
                 <div className="w-full mt-2 px-4 py-2 border rounded-md bg-gray-100 text-gray-700">
-                  {userEditInfo?.identification?.[index]?.idFile?.name ||
+                  {userIdentificationValues?.[index]?.idFile?.name ||
                     "No file uploaded"}
                 </div>
               ) : (
@@ -152,11 +166,15 @@ function IdentificationsPanel({
                   onChange={(event) => {
                     if (event.currentTarget.files) {
                       formik.setFieldTouched(
-                        `identification[${index}].idFile`,
+                        isKycFormValues(formik.values)
+                          ? `personalInfo.identification[${index}].idFile`
+                          : `identification[${index}].idFile`,
                         true
                       );
                       formik.setFieldValue(
-                        `identification[${index}].idFile`,
+                        isKycFormValues(formik.values)
+                          ? `personalInfo.identification[${index}].idFile`
+                          : `identification[${index}].idFile`,
                         event.currentTarget.files[0]
                       );
                     }
@@ -167,12 +185,12 @@ function IdentificationsPanel({
                 <FormErrorMessage
                   error={
                     (
-                      formik.errors.identification?.[
+                      errorsIdentification?.[
                         index
                       ] as FormikErrors<Identification>
                     )?.idFile
                   }
-                  touched={formik.touched.identification?.[index]?.idFile}
+                  touched={touchedIdentification?.[index]?.idFile}
                 />
               )}
             </div>
@@ -184,11 +202,15 @@ function IdentificationsPanel({
               type="button"
               className="text-white bg-red-500 hover:bg-red-600 px-3 py-2 rounded-md text-sm"
               onClick={() => {
-                const updatedIdentifications =
-                  formik.values.identification.filter(
-                    (_, idfIndex) => idfIndex !== index
-                  );
-                formik.setFieldValue("identification", updatedIdentifications);
+                const updatedIdentifications = identificationValues.filter(
+                  (_, idfIndex) => idfIndex !== index
+                );
+                formik.setFieldValue(
+                  isKycFormValues(formik.values)
+                    ? `personalInfo.identification`
+                    : `identification`,
+                  updatedIdentifications
+                );
               }}
             >
               Delete Identification
@@ -201,14 +223,17 @@ function IdentificationsPanel({
         type="button"
         className={`${styles["btn-primary"]} px-4 py-2 mt-4 rounded-md`}
         onClick={() => {
-          formik.setFieldValue("identification", [
-            ...formik.values.identification,
-            {
-              idType: "national-id",
-              idExpired: null,
-              idFile: null,
-            },
-          ]);
+          const newIdentification = {
+            idType: "national-id",
+            idExpired: null,
+            idFile: null,
+          };
+          formik.setFieldValue(
+            isKycFormValues(formik.values)
+              ? `personalInfo.identification`
+              : `identification`,
+            [...identificationValues, newIdentification]
+          );
         }}
         hidden={isOfficer}
       >

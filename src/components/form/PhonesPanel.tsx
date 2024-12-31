@@ -1,25 +1,55 @@
 import React from "react";
-import { FormikProps, FormikErrors } from "formik";
+import { FormikProps, FormikErrors, FormikTouched } from "formik";
 import FormErrorMessage from "./FormErrorMessage";
 import styles from "../../assets/css/Form.module.css";
 import {
   EditInfoFormValues,
   Phone,
 } from "../../services/types/EditInfoFormValues";
+import { KycFormValues } from "../../services/types/KycFormValues";
 
 interface PhonesPanelProps {
-  formik: FormikProps<EditInfoFormValues>;
-  userEditInfo: EditInfoFormValues | undefined;
+  formik: FormikProps<EditInfoFormValues> | FormikProps<KycFormValues>;
+  userEditInfo: EditInfoFormValues | KycFormValues | undefined;
   isOfficer: boolean;
 }
+
+// Type guard to check if formik.values is of KycFormValues
+const isKycFormValues = (
+  values: EditInfoFormValues | KycFormValues
+): values is KycFormValues => {
+  return (values as KycFormValues).personalInfo !== undefined;
+};
 
 function PhonesPanel({ formik, userEditInfo, isOfficer }: PhonesPanelProps) {
   const { getFieldProps } = formik;
 
+  const phoneValues = isKycFormValues(formik.values)
+    ? formik.values.personalInfo.phone
+    : formik.values.phone;
+
+  const userPhoneValues = userEditInfo
+    ? isKycFormValues(userEditInfo)
+      ? userEditInfo.personalInfo.phone
+      : userEditInfo.phone
+    : [];
+
+  const touchedPhones = formik.touched
+    ? isKycFormValues(formik.values)
+      ? (formik.touched as FormikTouched<KycFormValues>).personalInfo?.phone
+      : (formik.touched as FormikTouched<EditInfoFormValues>).phone
+    : [];
+
+  const errorsPhones = formik.errors
+    ? isKycFormValues(formik.values)
+      ? (formik.errors as FormikErrors<KycFormValues>).personalInfo?.phone
+      : (formik.errors as FormikErrors<EditInfoFormValues>).phone
+    : [];
+
   return (
     <div className={`${styles.panel} mb-6`}>
       <h4 className="text-md font-semibold mb-4">Phones</h4>
-      {formik.values.phone.map((phn, index) => (
+      {phoneValues.map((phn, index) => (
         <div
           key={index}
           className="border rounded-md p-4 mb-6 bg-gray-50 shadow-md"
@@ -40,27 +70,22 @@ function PhonesPanel({ formik, userEditInfo, isOfficer }: PhonesPanelProps) {
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-color"
                 placeholder={
                   isOfficer
-                    ? userEditInfo?.phone?.[index]?.phoneNumber || "N/A"
+                    ? userPhoneValues?.[index]?.phoneNumber || "N/A"
                     : "Enter phone number"
                 }
                 readOnly={isOfficer}
-                onFocus={() => {
-                  if (isOfficer && !formik.values.phone[index]?.phoneNumber) {
-                    formik.setFieldValue(
-                      `phone[${index}].phoneNumber`,
-                      userEditInfo?.phone?.[index]?.phoneNumber || ""
-                    );
-                  }
-                }}
-                {...getFieldProps(`phone[${index}].phoneNumber`)}
+                {...getFieldProps(
+                  isKycFormValues(formik.values)
+                    ? `personalInfo.phone[${index}].phoneNumber`
+                    : `phone[${index}].phoneNumber`
+                )}
               />
               {!isOfficer && (
                 <FormErrorMessage
                   error={
-                    (formik.errors.phone?.[index] as FormikErrors<Phone>)
-                      ?.phoneNumber
+                    (errorsPhones?.[index] as FormikErrors<Phone>)?.phoneNumber
                   }
-                  touched={formik.touched.phone?.[index]?.phoneNumber}
+                  touched={touchedPhones?.[index]?.phoneNumber}
                 />
               )}
             </div>
@@ -76,11 +101,15 @@ function PhonesPanel({ formik, userEditInfo, isOfficer }: PhonesPanelProps) {
               <select
                 id={`phone[${index}].phoneType`}
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-color"
-                {...getFieldProps(`phone[${index}].phoneType`)}
+                {...getFieldProps(
+                  isKycFormValues(formik.values)
+                    ? `personalInfo.phone[${index}].phoneType`
+                    : `phone[${index}].phoneType`
+                )}
                 value={
                   isOfficer
-                    ? userEditInfo?.phone?.[index]?.phoneType || "personal"
-                    : formik.values.phone[index]?.phoneType
+                    ? userPhoneValues?.[index]?.phoneType || "personal"
+                    : phoneValues[index]?.phoneType
                 }
                 disabled={isOfficer}
               >
@@ -103,17 +132,18 @@ function PhonesPanel({ formik, userEditInfo, isOfficer }: PhonesPanelProps) {
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-color"
                 onChange={(e) => {
                   formik.setFieldValue(
-                    `phone[${index}].phonePreferred`,
+                    isKycFormValues(formik.values)
+                      ? `personalInfo.phone[${index}].phonePreferred`
+                      : `phone[${index}].phonePreferred`,
                     e.target.value === "true"
                   );
                 }}
                 onBlur={formik.handleBlur}
                 value={
                   isOfficer
-                    ? userEditInfo?.phone?.[
-                        index
-                      ]?.phonePreferred?.toString() || "false"
-                    : formik.values.phone[index].phonePreferred.toString()
+                    ? userPhoneValues?.[index]?.phonePreferred?.toString() ||
+                      "false"
+                    : phoneValues[index]?.phonePreferred.toString()
                 }
                 disabled={isOfficer}
               >
@@ -129,10 +159,15 @@ function PhonesPanel({ formik, userEditInfo, isOfficer }: PhonesPanelProps) {
               type="button"
               className="text-white bg-red-500 hover:bg-red-600 px-3 py-2 rounded-md text-sm"
               onClick={() => {
-                const updatedPhones = formik.values.phone.filter(
+                const updatedPhones = phoneValues.filter(
                   (_, phnIndex) => phnIndex !== index
                 );
-                formik.setFieldValue("phone", updatedPhones);
+                formik.setFieldValue(
+                  isKycFormValues(formik.values)
+                    ? `personalInfo.phone`
+                    : `phone`,
+                  updatedPhones
+                );
               }}
             >
               Delete Phone
@@ -145,14 +180,15 @@ function PhonesPanel({ formik, userEditInfo, isOfficer }: PhonesPanelProps) {
         type="button"
         className={`${styles["btn-primary"]} px-4 py-2 mt-4 rounded-md`}
         onClick={() => {
-          formik.setFieldValue("phone", [
-            ...formik.values.phone,
-            {
-              phoneNumber: "",
-              phoneType: "personal",
-              phonePreferred: true,
-            },
-          ]);
+          const newPhone = {
+            phoneNumber: "",
+            phoneType: "personal",
+            phonePreferred: true,
+          };
+          formik.setFieldValue(
+            isKycFormValues(formik.values) ? `personalInfo.phone` : `phone`,
+            [...phoneValues, newPhone]
+          );
         }}
         hidden={isOfficer}
       >

@@ -13,7 +13,7 @@ const Login = () => {
   useEffect(() => {
     if (user) {
       if (user.role === "officer") {
-        navigate("/pages"); // Officer => Client list
+        navigate("/pages/review"); // Officer => Client list
       } else {
         navigate(`/pages/user/${user.name}/pi`); // Normal user => Profile page
       }
@@ -32,7 +32,7 @@ const Login = () => {
       if (loggedInUser) {
         // Check role for redirect
         if (loggedInUser.role === "officer") {
-          navigate("/pages"); // Officer => Client list
+          navigate("/pages/review"); // Officer => Client list
         } else {
           navigate(`/pages/user/${loggedInUser.name}/pi`); // Normal user => Profile page
         }

@@ -30,11 +30,9 @@ const PersonalInformation = () => {
 
   useEffect(() => {
     if (userInfo) {
-      console.log("userInfo.picture:", userInfo.picture);
       const imagePath = `/images/users/${
         userInfo.picture || "bonnie-green.png"
       }`;
-      console.log("Final imagePath:", imagePath);
       setInitialPreview(imagePath);
     }
   }, [userInfo]);
