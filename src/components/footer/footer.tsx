@@ -7,7 +7,7 @@ const Footer = () => {
         <ul className="flex flex-wrap items-center mb-6 space-y-1 md:mb-0">
           <li>
             <a
-              href="#"
+              href="/"
               className="mr-4 text-sm font-normal text-gray-500 hover:underline md:mr-6 dark:text-gray-400"
             >
               Terms and conditions
@@ -15,7 +15,7 @@ const Footer = () => {
           </li>
           <li>
             <a
-              href="#"
+              href="/"
               className="mr-4 text-sm font-normal text-gray-500 hover:underline md:mr-6 dark:text-gray-400"
             >
               Privacy Policy
@@ -23,7 +23,7 @@ const Footer = () => {
           </li>
           <li>
             <a
-              href="#"
+              href="/"
               className="mr-4 text-sm font-normal text-gray-500 hover:underline md:mr-6 dark:text-gray-400"
             >
               Licensing
@@ -31,7 +31,7 @@ const Footer = () => {
           </li>
           <li>
             <a
-              href="#"
+              href="/"
               className="mr-4 text-sm font-normal text-gray-500 hover:underline md:mr-6 dark:text-gray-400"
             >
               Cookie Policy
@@ -39,7 +39,7 @@ const Footer = () => {
           </li>
           <li>
             <a
-              href="#"
+              href="/"
               className="text-sm font-normal text-gray-500 hover:underline dark:text-gray-400"
             >
               Contact
@@ -48,7 +48,7 @@ const Footer = () => {
         </ul>
         <div className="flex space-x-6 sm:justify-center">
           <a
-            href="#"
+            href="/"
             className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
           >
             <svg
@@ -65,7 +65,7 @@ const Footer = () => {
             </svg>
           </a>
           <a
-            href="#"
+            href="/"
             className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
           >
             <svg
@@ -82,7 +82,7 @@ const Footer = () => {
             </svg>
           </a>
           <a
-            href="#"
+            href="/"
             className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
           >
             <svg
@@ -95,7 +95,7 @@ const Footer = () => {
             </svg>
           </a>
           <a
-            href="#"
+            href="/"
             className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
           >
             <svg
@@ -112,7 +112,7 @@ const Footer = () => {
             </svg>
           </a>
           <a
-            href="#"
+            href="/"
             className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
           >
             <svg
@@ -136,6 +136,7 @@ const Footer = () => {
           href="https://flowbite.com/"
           className="hover:underline"
           target="_blank"
+          rel="noreferrer"
         >
           Flowbite.com
         </a>

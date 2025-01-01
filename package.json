@@ -6,7 +6,6 @@
     "@reduxjs/toolkit": "^2.5.0",
     "@testing-library/jest-dom": "5.17.0",
     "@testing-library/react": "13.4.0",
-    "@testing-library/user-event": "13.5.0",
     "@types/jest": "27.5.2",
     "@types/node": "16.18.96",
     "@types/react": "18.2.79",
@@ -51,6 +50,7 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/user-event": "^14.5.2",
     "autoprefixer": "^10.4.20",
     "flowbite": "^2.3.0",
     "postcss": "^8.4.49",

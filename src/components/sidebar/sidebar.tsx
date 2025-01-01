@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import React, { ReactElement } from "react";
+import React from "react";
 import useOfficerMode from "../../hooks/useOfficerMode";
 interface MenuItem {
   name: string;
@@ -26,7 +26,7 @@ const Sidebar = () => {
   return (
     <aside
       id="sidebar"
-      className="fixed top-0 left-0 z-20 flex flex-col flex-shrink-0 hidden w-64 h-full pt-16 font-normal duration-75 lg:flex transition-width"
+      className="fixed top-0 left-0 z-20 flex flex-col flex-shrink-0 w-64 h-full pt-16 font-normal duration-75 lg:flex transition-width"
       aria-label="Sidebar"
     >
       <div className="relative flex flex-col flex-1 min-h-0 pt-0 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700">
@@ -39,7 +39,7 @@ const Sidebar = () => {
                     to={item.link}
                     className="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700"
                   >
-                    <img className="h-8 mr-3" src={item.icon} />
+                    <img className="h-8 mr-3" src={item.icon} alt="Tool" />
                     <span className="ml-3" sidebar-toggle-item="">
                       {item.name}
                     </span>

@@ -1,3 +1,4 @@
+// Handle input raw data changes in DatePicker component
 export const handleDateRawChange = (
   event?: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>
 ) => {

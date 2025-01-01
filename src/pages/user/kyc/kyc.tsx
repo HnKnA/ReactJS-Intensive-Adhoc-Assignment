@@ -162,10 +162,6 @@ const UserKYC = () => {
     <FormikProvider value={formik}>
       <form onSubmit={formik.handleSubmit}>
         <div className="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow-md">
-          <h2
-            className="text-2xl font-bold text-center mb-6"
-            style={{ color: "var(--primary-color)" }}
-          ></h2>
 
           {/* Personal Information Section */}
           <div className={`mb-6`}>

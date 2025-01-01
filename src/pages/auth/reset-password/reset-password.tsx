@@ -79,7 +79,7 @@ const ResetPassword = () => {
               >
                 I accept the{" "}
                 <a
-                  href="#"
+                  href="/"
                   className="text-primary-700 hover:underline dark:text-primary-500"
                 >
                   Terms and Conditions

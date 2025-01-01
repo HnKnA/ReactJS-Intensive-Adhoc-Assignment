@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { FormikProps, FormikErrors, FormikTouched } from "formik";
+import { FormikProps, FormikErrors } from "formik";
 import styles from "../../assets/css/Form.module.css";
 import {
   KycFormValues,
@@ -21,9 +21,12 @@ function LiabilitiesPanel({
 }: LiabilitiesPanelProps) {
   const { getFieldProps, setFieldValue } = formik;
 
-  const liabilities = isOfficer
-    ? userEditInfo?.kycInfo?.liabilities || []
-    : formik.values.kycInfo?.liabilities || [];
+  // Memoize liabilities to prevent unnecessary recalculations
+  const liabilities = useMemo(() => {
+    return isOfficer
+      ? userEditInfo?.kycInfo?.liabilities || []
+      : formik.values.kycInfo?.liabilities || [];
+  }, [isOfficer, userEditInfo, formik.values.kycInfo?.liabilities]);
 
   const touchedLiabilities = formik.touched?.kycInfo?.liabilities || [];
   const errorsLiabilities = formik.errors?.kycInfo?.liabilities || [];

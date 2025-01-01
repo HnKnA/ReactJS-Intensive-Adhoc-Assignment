@@ -1,11 +1,10 @@
 import React, { useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AuthenticatedContext } from "../../shared/Authenticated";
 
 const Header = () => {
   const { user, logout } = useContext(AuthenticatedContext);
   const navigate = useNavigate();
-  const links: Array<Record<string, string>> = [];
   return (
     <nav className="fixed z-30 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
       <div className="px-3 py-3 lg:px-5 lg:pl-3">
@@ -130,7 +129,7 @@ const Header = () => {
               </button>
 
               <div
-                className="z-20 z-50 hidden max-w-sm my-4 overflow-hidden text-base list-none bg-white divide-y divide-gray-100 rounded shadow-lg dark:divide-gray-600 dark:bg-gray-700"
+                className="z-50 hidden max-w-sm my-4 overflow-hidden text-base list-none bg-white divide-y divide-gray-100 rounded shadow-lg dark:divide-gray-600 dark:bg-gray-700"
                 id="notification-dropdown"
                 data-popper-placement="bottom"
                 style={{
@@ -145,14 +144,14 @@ const Header = () => {
                 </div>
                 <div>
                   <a
-                    href="#"
+                    href="/"
                     className="flex px-4 py-3 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
                   >
                     <div className="flex-shrink-0">
                       <img
                         className="rounded-full w-11 h-11"
                         src="/images/users/bonnie-green.png"
-                        alt="Jese image"
+                        alt="Jese"
                       />
                       <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 border border-white rounded-full bg-primary-700 dark:border-gray-700">
                         <svg
@@ -180,14 +179,14 @@ const Header = () => {
                     </div>
                   </a>
                   <a
-                    href="#"
+                    href="/"
                     className="flex px-4 py-3 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
                   >
                     <div className="flex-shrink-0">
                       <img
                         className="rounded-full w-11 h-11"
                         src="/images/users/jese-leos.png"
-                        alt="Jese image"
+                        alt="Jese"
                       />
                       <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-gray-900 border border-white rounded-full dark:border-gray-700">
                         <svg
@@ -217,14 +216,14 @@ const Header = () => {
                     </div>
                   </a>
                   <a
-                    href="#"
+                    href="/"
                     className="flex px-4 py-3 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
                   >
                     <div className="flex-shrink-0">
                       <img
                         className="rounded-full w-11 h-11"
                         src="/images/users/joseph-mcfall.png"
-                        alt="Joseph image"
+                        alt="Joseph"
                       />
                       <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-red-600 border border-white rounded-full dark:border-gray-700">
                         <svg
@@ -258,14 +257,14 @@ const Header = () => {
                     </div>
                   </a>
                   <a
-                    href="#"
+                    href="/"
                     className="flex px-4 py-3 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
                   >
                     <div className="flex-shrink-0">
                       <img
                         className="rounded-full w-11 h-11"
                         src="/images/users/leslie-livingston.png"
-                        alt="Leslie image"
+                        alt="Leslie"
                       />
                       <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-green-400 border border-white rounded-full dark:border-gray-700">
                         <svg
@@ -299,14 +298,14 @@ const Header = () => {
                     </div>
                   </a>
                   <a
-                    href="#"
+                    href="/"
                     className="flex px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-600"
                   >
                     <div className="flex-shrink-0">
                       <img
                         className="rounded-full w-11 h-11"
                         src="/images/users/robert-brown.png"
-                        alt="Robert image"
+                        alt="Robert"
                       />
                       <div className="absolute flex items-center justify-center w-5 h-5 ml-6 -mt-5 bg-purple-500 border border-white rounded-full dark:border-gray-700">
                         <svg
@@ -334,7 +333,7 @@ const Header = () => {
                   </a>
                 </div>
                 <a
-                  href="#"
+                  href="/"
                   className="block py-2 text-base font-normal text-center text-gray-900 bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:underline"
                 >
                   <div className="inline-flex items-center ">
@@ -374,7 +373,7 @@ const Header = () => {
               </button>
 
               <div
-                className="z-20 z-50 hidden max-w-sm my-4 overflow-hidden text-base list-none bg-white divide-y divide-gray-100 rounded shadow-lg dark:bg-gray-700 dark:divide-gray-600"
+                className="z-50 hidden max-w-sm my-4 overflow-hidden text-base list-none bg-white divide-y divide-gray-100 rounded shadow-lg dark:bg-gray-700 dark:divide-gray-600"
                 id="apps-dropdown"
                 data-popper-placement="bottom"
                 style={{
@@ -389,7 +388,7 @@ const Header = () => {
                 </div>
                 <div className="grid grid-cols-3 gap-4 p-4">
                   <a
-                    href="#"
+                    href="/"
                     className="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600"
                   >
                     <svg
@@ -409,7 +408,7 @@ const Header = () => {
                     </div>
                   </a>
                   <a
-                    href="#"
+                    href="/"
                     className="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600"
                   >
                     <svg
@@ -425,7 +424,7 @@ const Header = () => {
                     </div>
                   </a>
                   <a
-                    href="#"
+                    href="/"
                     className="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600"
                   >
                     <svg
@@ -445,7 +444,7 @@ const Header = () => {
                     </div>
                   </a>
                   <a
-                    href="#"
+                    href="/"
                     className="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600"
                   >
                     <svg
@@ -465,7 +464,7 @@ const Header = () => {
                     </div>
                   </a>
                   <a
-                    href="#"
+                    href="/"
                     className="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600"
                   >
                     <svg
@@ -485,7 +484,7 @@ const Header = () => {
                     </div>
                   </a>
                   <a
-                    href="#"
+                    href="/"
                     className="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600"
                   >
                     <svg
@@ -506,7 +505,7 @@ const Header = () => {
                     </div>
                   </a>
                   <a
-                    href="#"
+                    href="/"
                     className="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600"
                   >
                     <svg
@@ -527,7 +526,7 @@ const Header = () => {
                     </div>
                   </a>
                   <a
-                    href="#"
+                    href="/"
                     className="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600"
                   >
                     <svg
@@ -547,7 +546,7 @@ const Header = () => {
                     </div>
                   </a>
                   <a
-                    href="#"
+                    href="/"
                     className="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600"
                   >
                     <svg
@@ -636,7 +635,7 @@ const Header = () => {
                     <img
                       className="w-8 h-8 rounded-full"
                       src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                      alt="user photo"
+                      alt="user"
                     />
                   </button>
                 </div>
@@ -669,7 +668,7 @@ const Header = () => {
                   <ul className="py-1" role="none">
                     <li>
                       <a
-                        href="#"
+                        href="/"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                         role="menuitem"
                       >
@@ -678,7 +677,7 @@ const Header = () => {
                     </li>
                     <li>
                       <a
-                        href="#"
+                        href="/"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                         role="menuitem"
                       >
@@ -687,7 +686,7 @@ const Header = () => {
                     </li>
                     <li>
                       <a
-                        href="#"
+                        href="/"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                         role="menuitem"
                       >

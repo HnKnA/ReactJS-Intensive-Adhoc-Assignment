@@ -21,10 +21,12 @@ function SourceOfWealthsPanel({
 }: SourceOfWealthsPanelProps) {
   const { getFieldProps, setFieldValue } = formik;
 
-  // Determine sources of wealth based on officer mode
-  const sourcesOfWealth = isOfficer
-    ? userEditInfo?.kycInfo?.sourceOfWealth || []
-    : formik.values.kycInfo?.sourceOfWealth || [];
+  // Memoize sources of wealth to prevent unnecessary recalculations
+  const sourcesOfWealth = useMemo(() => {
+    return isOfficer
+      ? userEditInfo?.kycInfo?.sourceOfWealth || []
+      : formik.values.kycInfo?.sourceOfWealth || [];
+  }, [isOfficer, userEditInfo, formik.values.kycInfo?.sourceOfWealth]);
 
   const touchedSourcesOfWealth = formik.touched?.kycInfo?.sourceOfWealth || [];
   const errorsSourcesOfWealth = formik.errors?.kycInfo?.sourceOfWealth || [];

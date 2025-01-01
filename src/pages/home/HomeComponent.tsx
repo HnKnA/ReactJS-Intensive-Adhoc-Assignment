@@ -2,19 +2,17 @@ const HomeComponent = () => {
   return (
     <div className="flex flex-col justify-center items-center px-6 mx-auto h-screen xl:px-0 dark:bg-gray-900">
       <div className="block mb-5 md:max-w-md">
-        <img
-          src="/logo.png"
-          alt="maintenance image"
-        />
+        <img src="/logo.png" alt="maintenance" />
       </div>
       <div className="text-center xl:max-w-4xl">
         <h1 className="mb-3 text-2xl font-bold leading-tight text-gray-900 sm:text-4xl lg:text-5xl dark:text-white">
           Under construction
         </h1>
         <p className="mb-5 text-base font-normal text-gray-500 md:text-lg dark:text-gray-400">
-          This page is under construction, feel free to contribute your works to &nbsp; 
+          This page is under construction, feel free to contribute your works to
+          &nbsp;
           <a
-            href="#"
+            href="/"
             className="text-primary-700 hover:underline dark:text-primary-500"
           >
             contact us

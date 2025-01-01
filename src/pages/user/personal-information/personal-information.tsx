@@ -17,7 +17,7 @@ const PersonalInformation = () => {
 
   const { user } = useContext(AuthenticatedContext);
 
-  const { isOfficer, readOnly, disabled } = useOfficerMode();
+  const { isOfficer, disabled } = useOfficerMode();
   // State to store the initial preview image
   const [initialPreview, setInitialPreview] = useState<string>("");
   // Use the custom hook
@@ -83,7 +83,7 @@ const PersonalInformation = () => {
                   ></path>
                 </svg>
                 <a
-                  href="#"
+                  href="/"
                   className="ml-1 text-gray-700 hover:text-primary-600 md:ml-2 dark:text-gray-300 dark:hover:text-white"
                 >
                   Users

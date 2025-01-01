@@ -15,7 +15,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     return <Navigate to="/auth/login" replace />;
   }
 
-  // Restrict officers from accessing routes containing "/review"
+  // Restrict non-officers from accessing routes containing "/review"
   if (user.role !== "officer" && location.pathname.includes("/review")) {
     return <Navigate to="/" replace />;
   }

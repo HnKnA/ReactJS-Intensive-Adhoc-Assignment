@@ -1,5 +1,5 @@
 import React from "react";
-import { FormikProps, FormikErrors, FormikTouched } from "formik";
+import { FormikProps, FormikErrors } from "formik";
 import styles from "../../assets/css/Form.module.css";
 import {
   KycFormValues,
