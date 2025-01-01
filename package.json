@@ -2,7 +2,7 @@
   "name": "simple-kyc",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://HnKnA.github.io/ReactJS-Intensive-Adhoc-Assignment",
+  "homepage": "https://HnKnA.github.io/ReactJS-Intensive-Adhoc-Assignment/",
   "dependencies": {
     "@reduxjs/toolkit": "^2.5.0",
     "@testing-library/dom": "^10.4.0",
