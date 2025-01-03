@@ -41,42 +41,52 @@ Access the application at `http://localhost:3000/`.
 
 <img width="403" alt="image" src="https://github.com/user-attachments/assets/e5f2fe15-a2fd-47fe-bf79-21d16d856bcf" />
 
-### Add or Update image field:
-- Only the CREATE product API is available at the moment, and it does not affect the product list after successfully creating a product. Therefore, you can add an arbitrary string to replace this field in the form.
+### RBAC:
+- Users cannot access pages related to other users.
+- Users cannot access pages restricted to officers.
+- Only officers can access the Review page.
+- Officers can access all user pages.
 
-- This functionality will be updated as soon as the user's role feature is implemented.
+> For example: 
+- An user with the name "tuan" can not access "/pages/user/___anhtuan___/pi".
+- An user with the name "tuan" can not access "/pages/___review___".
+- Officers can access "/pages/user/___anhtuan___/pi" or "/pages/user/___hailan___/pi" if these 2 users exist; otherwise, a "User not found" toast will be displayed.
 
-![image](https://github.com/user-attachments/assets/4cbd2afa-85da-40a2-87c6-9458dc10f522)
+### Side pages:
+- The 'Forgot Password' and 'Sign Up' pages are designed for viewing and filling in inputs only, with the submit button disabled.
 
-### Order page:
-- For the time being, every user is treated as "normal user", meaning each person can only access and complete their own orders. However, with "fake admin" privilege in place, only the following username can acccess the page and view their orders [`tuan`, `spring`, `summer`, `autumn`, `winter`].
+<img width="543" alt="image" src="https://github.com/user-attachments/assets/39a450da-3465-475c-9224-020f30d6da1b" />
 
-- Usernames outside of this list can not access /order page normally.
+<img width="489" alt="image" src="https://github.com/user-attachments/assets/24901437-0e07-48c3-b2a2-f7534f90bc7e" />
+
+
+### Add vs Update image field (User mode):
+- This is just a mock functionality; no API is called during the process. The delay and picture changes are artificial, designed to simulate an API call.
+<img width="382" alt="image" src="https://github.com/user-attachments/assets/3524a735-ef25-48bd-b282-ba6d8d3aef63" />
 
 ## Services:
-### Product page:
-![image](https://github.com/user-attachments/assets/f4715b4a-e327-4765-a4d9-0b60f25583be)
-- Search bar is unavailable.
-- Filter products based on their category (Javascript implemented).
-- Create Order.
-- Add, View, Edit, Delete (Product).
+### Personal Information page:
+- Normal users can try or experiment with the update images functionality.
+- Fields are read-only for both users and officers. (In reality, users will update their information on the 'Edit' page, and the updated info will be displayed on this page.) This page is primarily for displaying information.
 
-### Order page (fake admin privilege):
-![image](https://github.com/user-attachments/assets/ac6a3884-2ce0-405a-9218-9b5c364416b4)
-- Complete pending orders.
-- View personal orders.
-- Can not view all orders of all users because there is no admin at the moment.
+<img width="876" alt="image" src="https://github.com/user-attachments/assets/e7a9a2de-4bbf-45a4-a4c2-c225845ee5db" />
+<img width="766" alt="image" src="https://github.com/user-attachments/assets/dbc2b830-c3d0-4236-a32d-f64ecace7537" />
 
-### User page (fake admin privilege): 
-![image](https://github.com/user-attachments/assets/49819f8a-2819-4886-bd2d-91f07983f3e8)
-- Search/Filter users
 
-### Account page (click on your username on the header):
-![image](https://github.com/user-attachments/assets/4a76292b-9059-4e57-945c-90ca9df88ed6)
-- Readonly form
+### Edit Personal Information page:
+- Users can fill in multiple input fields to add or update their information here.
+- A "POST" API request will be sent when they click the "Submit" button, and a success message will be displayed.
+- Officers operate in read-only mode and can view the information of a user, which is retrieved via a "GET" API.
+<img width="826" alt="image" src="https://github.com/user-attachments/assets/43d81f0c-f9ee-4d66-a67c-008bd717b5a7" />
+<img width="741" alt="image" src="https://github.com/user-attachments/assets/f5e08b15-db8d-4afb-8f3f-4a7c2b364097" />
 
-### Register, Login, Verify.
-### Light/Dark theme (sun icon on the header). 
-### Log out.
+
+### KYX page:
+- Follows the same logic as the Edit Personal Information page.
+
+### Review page:
+- Accessible only by officers.
+- Uses the same API to accept or reject a review.
+- Allows access to the user information page by clicking on a user's name.
 
 ## I will also update many comments later for the ease or reading code.
